@@ -130,6 +130,76 @@ public class MessagePacket implements Serializable{
 		this.msgInitiator = msgInitiator;
 	}
 	//
+
+	/**
+	 * Serialize Message Packet while sending the message
+	 * @param msgPacket Message Packet to be serialized
+	 * @return serialized message string
+	 */
+	public static String serializeMessage(MessagePacket msgPacket)
+	{
+		String msgToBeSent = msgPacket.msgId + MSG_DELIMITER 
+				+ msgPacket.msgContent + MSG_DELIMITER 
+				+ msgPacket.msgType.toString() + MSG_DELIMITER
+				+ msgPacket.msgOperation.toString() + MSG_DELIMITER
+				+ msgPacket.msgInitiator;
+	  	return msgToBeSent;
+	}
+	
+	/**
+	 * De-serialize the message packet and while receiving message
+	 * @param messageString - Message to be de-serialized
+	 * @return Message Packet Object
+	 */
+	public static MessagePacket deSerializeMessage(String messageString)
+	{
+		String[] msgArray = messageString.split(MSG_DELIMITER); 
+		MessagePacket msgPacket = new MessagePacket(msgArray[0], msgArray[1], MSG_TYPE.valueOf(msgArray[2]));
+		msgPacket.msgOperation = MSG_OPER.valueOf(msgArray[3]);
+		msgPacket.msgInitiator = msgArray[4];
+		return msgPacket;
+	}
+	
+	/**
+	 * Serialize cursor object for message sending
+	 * @param cursor - Cursor object to be serialized
+	 * @return serialized cursor string
+	 * @author Chaitanya Nettem
+	 */
+	public static String serializeCursor(Cursor cursor)
+	{
+		String serializedString = "";
+		int i=0;
+		while (cursor.moveToNext()) 
+		{
+			// To avoid row delimiter for the first row
+			if(i!=0)
+				serializedString += ROW_DELIMITER;				
+			serializedString += cursor.getString(0) + COL_DELIMITER	+ cursor.getString(1) + COL_DELIMITER + cursor.getString(2);		
+			i++;
+		}
+		return serializedString;
+	}
+	
+	/**
+	 * De-serialize cursor object from message received
+	 * @param serializedString - Serialized String
+	 * @return Deserialized cursor object
+	 * @author Chaitanya Nettem
+	 */
+	public static MatrixCursor deSerializeCursor(String serializedString)	
+	{
+		MatrixCursor cursor = new MatrixCursor(new String[]{"key","value", "version"});
+		String[] rows = serializedString.split(ROW_DELIMITER);
+		for (String row : rows) 
+		{
+			String[] columns = row.split(COL_DELIMITER);
+			if(columns.length > 2 && !columns[0].isEmpty() && !columns[1].isEmpty() && !columns[2].isEmpty())
+				cursor.addRow(columns);
+		}
+		cursor.close();
+		return cursor;		
+	}
 }
 
 /**
