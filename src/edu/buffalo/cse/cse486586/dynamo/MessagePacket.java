@@ -129,7 +129,6 @@ public class MessagePacket implements Serializable{
 	public void setMsgInitiator(String msgInitiator) {
 		this.msgInitiator = msgInitiator;
 	}
-	//
 
 	/**
 	 * Serialize Message Packet while sending the message
@@ -199,6 +198,30 @@ public class MessagePacket implements Serializable{
 		}
 		cursor.close();
 		return cursor;		
+	}
+	
+	
+	/**     * 
+	* Function to Send message to target Host
+	* @param targetHost  - Target to which the message should be sent 
+	* @param msgPacket - Message Packet to be sent 
+	* @author Chaitanya Nettem
+	*/
+	public static void sendMessage(String target, MessagePacket msgPacket) {
+	
+		//synchronized(lock)
+		{
+		  	// Attach Unique ID to the messageMSG_DELIMITER
+			String msgToBeSent = MessagePacket.serializeMessage(msgPacket);
+			String targetPort = DeviceInfo.getDevicePortNo(target);
+			Log.d(TAG, "Message Sent - Target : " + target);
+			Log.d(TAG, "Message Sent - Body - : " + msgToBeSent);
+			
+			// Add the message to queue so that responses can be queued and concurrency problems can be avoided
+			//SimpleDynamoProvider.requestQueue.add(target + QUEUE_DELIMITER + msgPacket.msgType + QUEUE_DELIMITER + msgPacket.msgId);
+			
+		  	new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, targetPort, msgToBeSent);
+		} 		
 	}
 }
 
