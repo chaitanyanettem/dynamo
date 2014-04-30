@@ -132,5 +132,67 @@ public class Node {
 			return true;
 		return false;
 	}
+
+	/********************************************************************
+	 * Node ID Helper Functions - Nettem
+	 *******************************************************************/
+	
+	/**
+	 * @return the nodeID
+	 */
+	public String getNodeID() {
+		return nodeID;
+	}
+
+	/**
+	 * @param nodeID the nodeID to set
+	 */
+	public void setNodeID(String nodeID) {
+		this.nodeID = nodeID;
+	}
+	
+	/**
+	 * @return the emulatorPort
+	 */
+	public String getEmulatorPort() {
+		return emulatorPort;
+	}
+
+	/**
+	 * @param emulatorPort the emulatorPort to set
+	 */
+	public void setEmulatorPort(String emulatorPort) {
+		this.emulatorPort = emulatorPort;
+	}
+
+	/**
+	 * @return the prevNodeID
+	 */
+	public String getPrevNodeID() {
+		return prevNodeID;
+	}
+
+	/**
+	 * @param prevNodeID the prevNodeID to set
+	 */
+	public void setPrevNodeID(String prevNodeID) {
+		this.prevNodeID = prevNodeID;
+	}
+
+	/**
+	 * @return the nextNodeID
+	 */
+	public String getNextNodeID() {
+		return nextNodeID;
+	}
+
+	/**
+	 * @param nextNodeID the next node id to set
+	 */
+	public void setNextNodeID(String nextNodeID) {
+		this.nextNodeID = nextNodeID;
+	}
+
+	
 	
 }
