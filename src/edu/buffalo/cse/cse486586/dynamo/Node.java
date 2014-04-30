@@ -1,0 +1,103 @@
+package edu.buffalo.cse.cse486586.dynamo;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+
+import android.util.Log;
+
+/**
+ * Node class has the DHT node properties and methods 
+ * @author Chaitanya Nettem
+ *
+ */
+public class Node {
+	private String nodeID;
+	private String deviceID;
+	private String emulatorPort;
+	
+	private String prevNodeID;
+	private String nextNodeID;
+	private String prevDeviceID;
+	private String nextDeviceID;
+	
+	private String[] quorumReplicas;
+	private String[] parentNodes;
+	
+	// Statically declare membership details since every node knows about all other
+	// nodes in the network
+	private static String[] membership = {"5562", "5556", "5554", "5558", "5560"};
+	
+	/**
+	 * Singleton Instance as we need only one Node object per App/Device
+	 */
+	private static Node nodeInstance;
+	
+	
+	private Node() {
+		// Private constructor to defeat instantiation
+		quorumReplicas = new String[2];
+		parentNodes = new String[2];
+	}
+	
+	/**
+	 * Initialize Singleton Node instance
+	 * @return Singleton Node Instance
+	 */
+	public static Node initNodeInstance(String emulatorPort)
+	{
+		Node node = null;		
+		try {				
+			String deviceID = DeviceInfo.getDeviceName(emulatorPort);
+			if(deviceID.compareTo("InvalidPortNo") == 0)
+				throw new Exception("Node Initailization failed -- "+deviceID);
+			
+			node = new Node();
+			node.emulatorPort = emulatorPort;
+			node.deviceID = deviceID;				
+							 
+			node.nodeID =  genHash(deviceID);
+			
+			
+			// As the hash value decreases as the device id increases, highest device id becomes the lowest hash 
+			// value. Based on this storing the successor 2 nodes as quorum replicas
+			if(node.findNodeInMembership(deviceID) != -1)
+			{
+				node.setQuorumReplicas(node.getQuorumReplicas(node.findNodeInMembership(deviceID)));
+				node.setParentNodes(node.getParentNodes(node.findNodeInMembership(deviceID)));
+			}
+			else
+				Log.e("Node","Node not present in membership");
+			
+			int prevIndex = (node.findNodeInMembership(deviceID) == 0)? (membership.length - 1) : (node.findNodeInMembership(deviceID) - 1);
+			node.prevDeviceID =  membership[prevIndex];
+			node.nextDeviceID = node.quorumReplicas[0];
+			
+			node.prevNodeID =  genHash(node.prevDeviceID);
+			node.nextNodeID =  genHash(node.nextDeviceID);
+			
+		} 
+		catch (NoSuchAlgorithmException e) {
+			Log.e("Node", "Node instance creation failed : "+e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			Log.e("Node", "Node instance creation failed : "+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		if(nodeInstance == null)
+			nodeInstance = node;
+		return node;			
+	}
+	
+	/**
+	 * To check whether the node is initialized or not
+	 */
+	public static boolean isNodeInitialized()
+	{
+		if(nodeInstance != null)
+			return true;
+		return false;
+	}
+	
+}
