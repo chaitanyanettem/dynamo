@@ -89,6 +89,39 @@ public class Node {
 			nodeInstance = node;
 		return node;			
 	}
+
+	/**
+	 * Get Singleton Node instance
+	 * @return Node Instance
+	 * @throws Exception - No Node initialization
+	 */
+	
+	public static Node getInstance() throws Exception
+	{
+		/* Make sure that initNodeInstance is called before getInstance*/
+		if(nodeInstance == null)		
+			throw new Exception("No Node initialization");
+		
+		return nodeInstance;
+	}
+	
+	/**
+	 * Get Singleton Node instance for the device id specified
+	 * @return Node Instance
+	 * @throws Exception - No Node initialization
+	 */
+	public static Node getInstance(String deviceID) throws Exception
+	{
+		// Initiate the node object with the device id passed and return
+		if(nodeInstance == null)		
+			throw new Exception("Custom Error : Node instance not initialized.");
+		
+		if(nodeInstance.deviceID.compareTo(deviceID) != 0)
+			return Node.initNodeInstance(DeviceInfo.getDevicePortNo(deviceID));
+		else
+			return nodeInstance;		
+		
+	}
 	
 	/**
 	 * To check whether the node is initialized or not
