@@ -361,5 +361,94 @@ public class Node {
 		return null;
 		
 	}
+
+		/**
+	 * Get membership details
+	 */
+	public String[] getMembershipDetails()
+	{
+		return membership;
+	}
+	
+	/**
+	 * Find node id in the membership
+	 * @param deviceID - Device id for which the index has to be found
+	 * @return Node index in membership list
+	 */
+	public int findNodeInMembership(String deviceID)
+	{
+		for (int i = 0; i < membership.length; i++) 
+		{
+			if(membership[i].compareTo(deviceID) == 0)
+				return i;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Find quorum replicas for give node index	 * 
+	 */
+	public String[] getQuorumReplicas(int nodeIndex)
+	{
+		int successorId1, successorId2;
+		if(nodeIndex == membership.length - 1)
+			successorId1 = 0;
+		else
+			successorId1 = nodeIndex + 1;
+		
+		if(successorId1 == membership.length - 1)
+			successorId2 = 0;
+		else
+			successorId2 = successorId1 + 1;
+		
+		return new String[] {membership[successorId1], membership[successorId2]};
+		
+	}
+    
+	/**
+	 * Find parent nodes for which the current node is a replica
+	 */
+	public String[] getParentNodes(int nodeIndex)
+	{
+		int prevIndex1 = (nodeIndex == 0)? (membership.length - 1) : (nodeIndex - 1);
+		int prevIndex2 = (prevIndex1 == 0)? (membership.length - 1) : (prevIndex1 - 1);
+		return new String[] {membership[prevIndex1], membership[prevIndex2]};
+	}
+	
+	/**
+	 * Checks whether the device id passed is a replica member of current node
+	 */
+	public boolean isReplicaMember(String deviceId)
+	{
+		for (String replica : quorumReplicas) {
+			if(replica.compareTo(deviceId) == 0)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks whether the device id passed is a parent member of current node
+	 */
+	public boolean isParentMember(String deviceId)
+	{
+		for (String parent : parentNodes) {
+			if(parent.compareTo(deviceId) == 0)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Enum for NODE 
+	 * @author Chaitanya Nettem 
+	 *
+	 */
+    public enum NODE
+    {
+    	PREVIOUS,
+    	CURRENT,
+    	NEXT
+    };
 	
 }
