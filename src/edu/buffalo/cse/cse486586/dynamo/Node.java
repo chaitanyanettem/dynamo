@@ -134,6 +134,82 @@ public class Node {
 	}
 
 	/********************************************************************
+	 * Device ID Helper Functions - Nettem
+	 *******************************************************************/
+	
+	/**
+	 * @return the device id
+	 */
+	public String getDeviceID() {
+		return deviceID;
+	}
+
+	/**
+	 * @param deviceID the emulatorPort to set
+	 */
+	public void setDeviceID(String deviceID) {
+		this.deviceID = deviceID;
+	}
+	
+	/**
+	 * @return the prevDeviceID
+	 */
+	public String getPrevDeviceID() {
+		return prevDeviceID;
+	}
+
+	/**
+	 * @param prevDeviceID the previous device id to set
+	 */
+	public void setPrevDeviceID(String prevDeviceID) {
+		this.prevDeviceID = prevDeviceID;
+	}
+
+	/**
+	 * @return the next Device Id
+	 */
+	public String getNextDeviceID() {
+		return nextDeviceID;
+	}
+
+	/**
+	 * @param nextDeviceID the next device id to set
+	 */
+	public void setNextDeviceID(String nextDeviceID) {
+		this.nextDeviceID = nextDeviceID;
+	}
+	
+	/**
+	 * @return the quorumReplicas
+	 */
+	public String[] getQuorumReplicas() {
+		return quorumReplicas;
+	}
+
+	/**
+	 * @param quorumReplicas the quorumReplicas to set
+	 */
+	public void setQuorumReplicas(String[] quorumReplicas) {
+		this.quorumReplicas = quorumReplicas;
+	}
+
+
+	/**
+	 * Find parent nodes for which the current node is a replica
+	 * @return Parent nodes
+	 */
+	public String[] getParentNodes() {
+		return parentNodes;
+	}
+
+	/**
+	 * @param parentNodes the parentNodes to set
+	 */
+	public void setParentNodes(String[] parentNodes) {
+		this.parentNodes = parentNodes;
+	}
+
+	/********************************************************************
 	 * Node ID Helper Functions - Nettem
 	 *******************************************************************/
 	
@@ -193,6 +269,6 @@ public class Node {
 		this.nextNodeID = nextNodeID;
 	}
 
-	
+
 	
 }
