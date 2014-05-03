@@ -91,6 +91,25 @@ public class Node {
 	}
 
 	/**
+     * Generate Hash function using SHA1 for key in DHT implementation
+     * @param input - key
+     * @return Hash value
+     * @throws NoSuchAlgorithmException
+     */
+    public static String genHash(String input) throws NoSuchAlgorithmException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        byte[] sha1Hash = sha1.digest(input.getBytes());
+        Formatter formatter = new Formatter();
+        for (byte b : sha1Hash) {
+            formatter.format("%02x", b);
+        }
+        
+        String formattedString = formatter.toString();
+        formatter.close();
+        return formattedString;
+    }
+	
+	/**
 	 * Get Singleton Node instance
 	 * @return Node Instance
 	 * @throws Exception - No Node initialization
