@@ -288,6 +288,78 @@ public class Node {
 		this.nextNodeID = nextNodeID;
 	}
 
+    /**
+    * Node Lookup for the key insert/query/delete operation
+   	* @param key - Key to be inserted/queried/deleted
+   	* @param node - Node for which the lookup has to be performed
+   	* @return NODE - CURRENT, PREVIOUS or NEXT
+   	* @throws Exception
+   	* 
+   	* @author Chaitanya Nettem
+   	*/
+	public static NODE nodeLookup(String key, Node node) throws Exception
+	{		
+		String hashkey = Node.genHash(key);
+		
+		/* 
+		 * If wildcard is used then return current node else check whether
+		 * key to be inserted lies between the previous node id and the current node id 
+		 * or greater than the current node
+		 */
+		//Log.i("NodeLookup", "Already visited : "+node.alreadyVisited.keySet());
+		if(key.compareTo("*") == 0 || key.compareTo("@") == 0)
+		{
+			return NODE.CURRENT;
+		}
+		else if(node.getNodeID().compareTo(node.getNextNodeID()) == 0 || node.getNodeID().compareTo(node.getPrevNodeID()) == 0)
+		{
+			return NODE.CURRENT;
+		}
+		
+		else if (hashkey.compareTo(node.getNodeID()) <= 0 && hashkey.compareTo(node.getPrevNodeID()) > 0)		
+		{
+			return NODE.CURRENT;
+		}
 
+		else if(node.getPrevNodeID().compareTo(node.getNodeID()) > 0 && hashkey.compareTo(node.getPrevNodeID()) > 0
+				&& hashkey.compareTo(node.getNodeID()) > 0)
+		{
+			return NODE.CURRENT;
+		}
+		else if(node.getPrevNodeID().compareTo(node.getNodeID()) > 0 && hashkey.compareTo(node.getPrevNodeID()) < 0
+				&& hashkey.compareTo(node.getNodeID()) < 0)
+		{
+			return NODE.CURRENT;
+		}
+		
+		else
+		{
+			return NODE.NEXT;
+		}
+	}
+	
+	/**
+	 * Node lookup in membership
+	 */
+	public static Node nodeLookupInMembership(String key) throws Exception
+	{
+		if(key.compareTo("*") == 0 || key.compareTo("@") == 0)
+		{
+			Log.i("NodeLookup", "key is * or @. So returning current node in lookupmembership");
+			return nodeInstance;
+		}
+		
+		for (String	member : membership) 
+		{
+			Node node = getInstance(member);
+			if(nodeLookup(key, node) == NODE.CURRENT)
+			{
+				Log.i("NodeLookup", "node looked up : "+member);
+				return node;
+			}
+		}
+		return null;
+		
+	}
 	
 }
