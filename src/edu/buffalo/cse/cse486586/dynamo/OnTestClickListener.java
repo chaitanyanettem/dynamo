@@ -23,15 +23,27 @@ public class OnTestClickListener implements OnClickListener {
 	private final ContentValues[] mContentValues;
 
 	public OnTestClickListener(TextView _tv, ContentResolver _cr) {
-		//
+		mTextView = _tv;
+		mContentResolver = _cr;
+		mUri = buildUri("content", "edu.buffalo.cse.cse486586.simpledht.provider");
+		mContentValues = initTestValues();	
 	}
 
 	private Uri buildUri(String scheme, String authority) {
-		//
+		Uri.Builder uriBuilder = new Uri.Builder();
+		uriBuilder.authority(authority);
+		uriBuilder.scheme(scheme);
+		return uriBuilder.build();
 	}
 
 	private ContentValues[] initTestValues() {
-		//
+		ContentValues[] cv = new ContentValues[TEST_CNT];
+		for (int i = 0; i < TEST_CNT; i++) {
+			cv[i] = new ContentValues();
+			cv[i].put(KEY_FIELD, "key" + Integer.toString(i));
+			cv[i].put(VALUE_FIELD, "val" + Integer.toString(i));
+		}
+		return cv;
 	}
 
 	@Override
